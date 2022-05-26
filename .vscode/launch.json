@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) 启动",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "cmd",
+            "args": [
+                "/C",
+                "gdb ${fileDirname}\\${fileBasenameNoExtension}.c"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "preLaunchTask": "echo"
+            
+        },
+        {
+            "name": "(Windows) Launch",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "cmd",
+            "preLaunchTask": "echo", 
+            "args": [ 
+                "/C",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "&",
+                "echo."
+            ],
+            "stopAtEntry": false, 
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "console": "externalTerminal",
+        }
+    ]
+}

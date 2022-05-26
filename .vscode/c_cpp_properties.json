@@ -1,0 +1,60 @@
+{
+    "configurations": [
+        {
+            "name": "NDKclang",
+            "includePath": [
+                "${workspaceRoot}",
+                "${workspaceFolder}/**",
+                "C:/arm gcc/android-ndk-r24/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/14.0.1/include/**",
+                "C:/arm gcc/android-ndk-r24/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "__GNUC__=6",
+                "__cdecl=__attribute__((__cdecl__))"
+            ],
+            "compilerPath": "C:/arm gcc/android-ndk-r24/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
+            "intelliSenseMode": "linux-clang-arm64",
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "",
+                "path": [
+                    "${workspaceRoot}",
+                    "${workspaceFolder}/**",
+                    "C:/arm gcc/NDK LLVM/lib64/clang/12.0.8/**",
+                    "C:/arm gcc/NDK LLVM/sysroot/usr/**"
+                ]
+            },
+            "cStandard": "c99",
+            "cppStandard": "c++17",
+            "mergeConfigurations": true,
+            "compilerArgs": [
+                "--target=aarch64-linux-android31",
+                "-O3",
+                "-march=armv8-a+sve"
+            ]
+        },
+        {
+            "name": "LLVMclang",
+            "includePath": [
+                "${workspaceRoot}",
+                "${workspaceFolder}/**",
+                "C:/arm gcc/android-ndk-r24/toolchains/llvm/prebuilt/windows-x86_64/lib64/clang/14.0.1/include/**",
+                "C:/arm gcc/android-ndk-r24/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "__GNUC__"
+            ],
+            "compilerPath": "C:\\arm gcc\\NDK LLVM\\aarch64-linux-android\\bin\\as.exe",
+            "cStandard": "c99",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "windows-clang-x64",
+            "configurationProvider": "ms-vscode.makefile-tools"
+        }
+    ],
+    "version": 4
+}
