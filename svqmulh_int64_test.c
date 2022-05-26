@@ -7,14 +7,14 @@
 
 static const size_t SIZE=1024*1024+5;
 static const size_t OFFSET=2;
-#define ScalarType int16_t
-#define VectorType svint16_t
-#define Doublelenth int32_t
-#define WhileLT svwhilelt_b16
-#define COUNT svcnth
-#define Slrlen 15
+#define ScalarType int64_t
+#define VectorType svint64_t
+#define Doublelenth __int128_t
+#define WhileLT svwhilelt_b64
+#define COUNT svcntd
+#define Slrlen 63
 
-ScalarType indexrange=INT16_MAX/2;
+ScalarType indexrange=INT64_MAX/2;
 
 static void calc_vecmulh_opt(ScalarType c[SIZE],ScalarType a[SIZE],ScalarType b[SIZE])
 {
@@ -32,7 +32,7 @@ static void calc_vecmulh_opt(ScalarType c[SIZE],ScalarType a[SIZE],ScalarType b[
         VectorType svc=svqdmulh(sva,svb);
         //Store a+b
         svst1(pred2,c+i,svc);
-
+        
     } 
 }
 static void calc_vecmulh_ref(ScalarType out[SIZE],ScalarType a[SIZE],ScalarType b[SIZE])
@@ -44,7 +44,7 @@ static void calc_vecmulh_ref(ScalarType out[SIZE],ScalarType a[SIZE],ScalarType 
     }
 }
 
-int test_svqdmulh_int16_test()
+int test_svqdmulh_int64_test()
 {
     ScalarType *ref_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
     ScalarType *opt_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
@@ -55,8 +55,8 @@ int test_svqdmulh_int16_test()
     {
         ref_x[i]=0;
         opt_x[i]=0;
-        a[i]=i%(indexrange);
-        b[i]=i%(indexrange);
+        a[i]=i%indexrange;
+        b[i]=i%indexrange;
     }
 
     for (size_t i=(SIZE-OFFSET);i<SIZE;++i)

@@ -7,14 +7,14 @@
 
 static const size_t SIZE=1024*1024+5;
 static const size_t OFFSET=2;
-#define ScalarType int16_t
-#define VectorType svint16_t
-#define Doublelenth int32_t
-#define WhileLT svwhilelt_b16
-#define COUNT svcnth
-#define Slrlen 15
+#define ScalarType int8_t
+#define VectorType svint8_t
+#define Doublelenth int16_t
+#define WhileLT svwhilelt_b8
+#define COUNT svcntb
+#define Slrlen 7
 
-ScalarType indexrange=INT16_MAX/2;
+ScalarType indexrange=INT8_MAX/2;
 
 static void calc_vecmulh_opt(ScalarType c[SIZE],ScalarType a[SIZE],ScalarType b[SIZE])
 {
@@ -44,7 +44,7 @@ static void calc_vecmulh_ref(ScalarType out[SIZE],ScalarType a[SIZE],ScalarType 
     }
 }
 
-int test_svqdmulh_int16_test()
+int test_svqdmulh_int8_test()
 {
     ScalarType *ref_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
     ScalarType *opt_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
