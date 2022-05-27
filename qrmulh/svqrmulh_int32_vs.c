@@ -7,16 +7,15 @@
 
 static const size_t SIZE=1024*1024+5;
 static const size_t OFFSET=2;
-#define ScalarType int16_t
-#define VectorType svint16_t
-#define Doublelenth int32_t
-#define WhileLT svwhilelt_b16
-#define COUNT svcnth
-#define Slrlen 15
+#define ScalarType int32_t
+#define VectorType svint32_t
+#define Doublelenth int64_t
+#define WhileLT svwhilelt_b32
+#define COUNT svcntw
+#define Slrlen 31
+#define MAX_VALUE INT32_MAX
 
-ScalarType indexrange=INT16_MAX/2;
-
-static void calc_vecmulh_opt(ScalarType c[SIZE],ScalarType a[SIZE],ScalarType b[SIZE])
+static void calc_vecmulh_opt(ScalarType c[SIZE],ScalarType a[SIZE],ScalarType b)
 {
     //Stride by the number of words in the vector
     for (size_t i=0;i<SIZE;i+=COUNT())
@@ -26,37 +25,35 @@ static void calc_vecmulh_opt(ScalarType c[SIZE],ScalarType a[SIZE],ScalarType b[
         svbool_t pred2=WhileLT(i,SIZE-OFFSET);
         //Load a vector of a
         VectorType sva=svld1(pred1,a+i);
-        //Load a vector of b
-        VectorType svb=svld1(pred1,b+i);
-        //Load a vector of c
-        VectorType svc=svqdmulh(sva,svb);
+        //mul svc
+        VectorType svc=svqdmulh(sva,b);
         //Store a+b
         svst1(pred2,c+i,svc);
 
     } 
 }
-static void calc_vecmulh_ref(ScalarType out[SIZE],ScalarType a[SIZE],ScalarType b[SIZE])
+static void calc_vecmulh_ref(ScalarType out[SIZE],ScalarType a[SIZE],ScalarType b)
 {
     for (size_t i=0;i<SIZE;++i)
     {
-        Doublelenth temp=a[i]*b[i];
-        out[i]=temp>>Slrlen;
+        Doublelenth temp=a[i]*b;
+        out[i]=-((temp>>(Slrlen-1))+1)/2;
     }
 }
 
-int test_svqdmulh_int16_test()
+int test_svqdmulh_int32_vs()
 {
     ScalarType *ref_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
     ScalarType *opt_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
     ScalarType *a=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
-    ScalarType *b=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
+    srand((unsigned)time(NULL));
+    ScalarType b=rand()%MAX_VALUE;
 
     for (size_t i=0;i<SIZE;++i)
     {
         ref_x[i]=0;
         opt_x[i]=0;
-        a[i]=i%(indexrange);
-        b[i]=i%(indexrange);
+        a[i]=i%((MAX_VALUE));
     }
 
     for (size_t i=(SIZE-OFFSET);i<SIZE;++i)
@@ -72,7 +69,7 @@ int test_svqdmulh_int16_test()
         if(ref_x[i]!=opt_x[i])
         {
             printf("%s, %d TEST FAILED\n",__func__,__LINE__);
-            printf("ERROR:%lu,ref_x=%u,opt_x=%u\n",i,ref_x[i],opt_x[i]);
+            printf("ERROR:%lu,ref_x=%lld,opt_x=%lld\n",i,ref_x[i],opt_x[i]);
 
             return 1;
         }
@@ -82,11 +79,17 @@ int test_svqdmulh_int16_test()
     {
         if(100!=opt_x[i]){
             printf("%s, %d TEST FAILED\n",__func__,__LINE__);
-            printf("ERROR:%lu,opt_x=%u\n",i,opt_x[i]);
+            printf("ERROR:%lu,opt_x=%lld\n",i,opt_x[i]);
             return 1;
         }
     }
     printf("%s, %d TEST PASSED\n",__func__,__LINE__);
 
     return EXIT_SUCCESS;
+}
+
+int main()
+{
+    test_svqdmulh_int32_vs();
+    return 1;
 }

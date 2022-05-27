@@ -7,14 +7,13 @@
 
 static const size_t SIZE=1024*1024+5;
 static const size_t OFFSET=2;
-#define ScalarType int32_t
-#define VectorType svint32_t
-#define Doublelenth int64_t
-#define WhileLT svwhilelt_b32
-#define COUNT svcntw
-#define Slrlen 31
-
-ScalarType indexrange=INT32_MAX/2;
+#define ScalarType int64_t
+#define VectorType svint64_t
+#define Doublelenth __int128_t
+#define WhileLT svwhilelt_b64
+#define COUNT svcntd
+#define Slrlen 63
+#define MAX_VALUE INT64_MAX
 
 static void calc_vecmulh_opt(ScalarType c[SIZE],ScalarType a[SIZE],ScalarType b[SIZE])
 {
@@ -32,7 +31,7 @@ static void calc_vecmulh_opt(ScalarType c[SIZE],ScalarType a[SIZE],ScalarType b[
         VectorType svc=svqdmulh(sva,svb);
         //Store a+b
         svst1(pred2,c+i,svc);
-
+        
     } 
 }
 static void calc_vecmulh_ref(ScalarType out[SIZE],ScalarType a[SIZE],ScalarType b[SIZE])
@@ -40,23 +39,24 @@ static void calc_vecmulh_ref(ScalarType out[SIZE],ScalarType a[SIZE],ScalarType 
     for (size_t i=0;i<SIZE;++i)
     {
         Doublelenth temp=a[i]*b[i];
-        out[i]=temp>>Slrlen;
+        out[i]=-(temp>>(Slrlen-1)+1)/2;
     }
 }
 
-int test_svqdmulh_int32_test()
+int test_svqdmulh_int64_vv()
 {
     ScalarType *ref_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
     ScalarType *opt_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
     ScalarType *a=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
     ScalarType *b=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
+    srand((unsigned)time(NULL));
 
     for (size_t i=0;i<SIZE;++i)
     {
         ref_x[i]=0;
         opt_x[i]=0;
-        a[i]=i%(indexrange);
-        b[i]=i%(indexrange);
+        a[i]=i%((MAX_VALUE));
+        b[i]=rand()%MAX_VALUE;
     }
 
     for (size_t i=(SIZE-OFFSET);i<SIZE;++i)
@@ -72,7 +72,7 @@ int test_svqdmulh_int32_test()
         if(ref_x[i]!=opt_x[i])
         {
             printf("%s, %d TEST FAILED\n",__func__,__LINE__);
-            printf("ERROR:%lu,ref_x=%u,opt_x=%u\n",i,ref_x[i],opt_x[i]);
+            printf("ERROR:%lu,ref_x=%ld,opt_x=%ld\n",i,ref_x[i],opt_x[i]);
 
             return 1;
         }
@@ -82,11 +82,17 @@ int test_svqdmulh_int32_test()
     {
         if(100!=opt_x[i]){
             printf("%s, %d TEST FAILED\n",__func__,__LINE__);
-            printf("ERROR:%lu,opt_x=%u\n",i,opt_x[i]);
+            printf("ERROR:%lu,opt_x=%ld\n",i,opt_x[i]);
             return 1;
         }
     }
     printf("%s, %d TEST PASSED\n",__func__,__LINE__);
 
     return EXIT_SUCCESS;
+}
+
+int main()
+{
+    test_svqdmulh_int64_vv();
+    return 1;
 }
