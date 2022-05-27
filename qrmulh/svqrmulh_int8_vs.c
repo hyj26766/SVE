@@ -26,7 +26,7 @@ static void calc_vecmulh_opt(ScalarType c[SIZE],ScalarType a[SIZE],ScalarType b)
         //Load a vector of a
         VectorType sva=svld1(pred1,a+i);
         //mul svc
-        VectorType svc=svqdmulh(sva,b);
+        VectorType svc=svqrdmulh(sva,b);
         //Store a+b
         svst1(pred2,c+i,svc);
 
@@ -37,11 +37,11 @@ static void calc_vecmulh_ref(ScalarType out[SIZE],ScalarType a[SIZE],ScalarType 
     for (size_t i=0;i<SIZE;++i)
     {
         Doublelenth temp=a[i]*b;
-        out[i]=-((temp>>(Slrlen-1))+1)/2;
+        out[i]=((temp>>(Slrlen-1))+1)/2;
     }
 }
 
-int test_svqdmulh_int8_vs()
+int test_svqrdmulh_int8_vs()
 {
     ScalarType *ref_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
     ScalarType *opt_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
@@ -90,6 +90,6 @@ int test_svqdmulh_int8_vs()
 
 int main()
 {
-    test_svqdmulh_int8_vs();
+    test_svqrdmulh_int8_vs();
     return 1;
 }

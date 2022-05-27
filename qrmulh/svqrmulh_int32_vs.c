@@ -37,11 +37,11 @@ static void calc_vecmulh_ref(ScalarType out[SIZE],ScalarType a[SIZE],ScalarType 
     for (size_t i=0;i<SIZE;++i)
     {
         Doublelenth temp=a[i]*b;
-        out[i]=-((temp>>(Slrlen-1))+1)/2;
+        out[i]=((temp>>(Slrlen-1))+1)/2;
     }
 }
 
-int test_svqdmulh_int32_vs()
+int test_svqrdmulh_int32_vs()
 {
     ScalarType *ref_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
     ScalarType *opt_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
@@ -90,6 +90,6 @@ int test_svqdmulh_int32_vs()
 
 int main()
 {
-    test_svqdmulh_int32_vs();
+    test_svqrdmulh_int32_vs();
     return 1;
 }
