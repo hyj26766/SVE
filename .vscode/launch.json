@@ -13,8 +13,9 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": true,
-            "preLaunchTask": "echo"
+            "externalConsole": true
+            //,
+            //"preLaunchTask": "echo"//
             
         },
         {

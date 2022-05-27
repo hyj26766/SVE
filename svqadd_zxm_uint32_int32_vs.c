@@ -12,12 +12,11 @@ static const size_t OFFSET=2;
 #define VectorType svint32_t
 #define VectorType1 svuint32_t
 #define WhileLE svwhilelt_b32
-#define MAX_VALUE UNIT_MAX
+#define MAX_VALUE INT32_MAX
 #define MIN_VALUE 0
 #define COUNT svcntw
 
-
-static void calc_vecadd_opt(ScalarType1 c1[SIZE],ScalarType1 c2[SIZE],ScalarType1 c3[SIZE],ScalarType1 c3[SIZE],ScalarType b)
+static void calc_vecadd_opt(ScalarType1 c1[SIZE],ScalarType1 c2[SIZE],ScalarType1 c3[SIZE],ScalarType1 a[SIZE],ScalarType b)
 {
     //Stride by the number of words in the vector
     for (size_t i=0;i<SIZE;i+=COUNT())
@@ -50,7 +49,7 @@ static void calc_vecadd_ref(ScalarType1 out[SIZE],ScalarType1 a[SIZE],ScalarType
             out[i]=MIN_VALUE;
         }
         else{
-            a[i]+b;
+            out[i]=a[i]+b;
         }
         
     }
@@ -129,4 +128,10 @@ int test_svsqadd_zxm_uint32_int32_vs()
     printf("%s, %d TEST PASSED\n",__func__,__LINE__);
 
     return EXIT_SUCCESS;
+}
+
+int main()
+{
+    test_svsqadd_zxm_uint32_int32_vs();
+    return 1;
 }
