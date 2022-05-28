@@ -36,7 +36,7 @@ static void calc_vecmulh_ref(ScalarType out[SIZE],ScalarType a[SIZE],ScalarType 
 {
     for (size_t i=0;i<SIZE;++i)
     {
-        Doublelenth temp=a[i]*b;
+        Doublelenth temp=(Doublelenth)a[i]*b;
         out[i]=((temp>>(Slrlen-1))+1)/2;
     }
 }

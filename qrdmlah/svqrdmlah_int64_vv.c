@@ -41,7 +41,7 @@ static void calc_vecmlah_ref(ScalarType out[SIZE],ScalarType c[SIZE],ScalarType 
 {
     for (size_t i=0;i<SIZE;++i)
     {
-        Doublelenth temp=a[i]*b[i];
+        Doublelenth temp=(Doublelenth)a[i]*b[i];
         Doublelenth temp2=((temp>>(Slrlen-1))+1)/2 + c[i];
         if(temp2>MAX_VALUE)
         {

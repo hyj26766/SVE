@@ -39,7 +39,7 @@ static void calc_vecmlsh_ref(ScalarType out[SIZE],ScalarType c[SIZE],ScalarType 
 {
     for (size_t i=0;i<SIZE;++i)
     {
-        Doublelenth temp=a[i]*b;
+        Doublelenth temp=(Doublelenth)a[i]*b;
         Doublelenth temp2=c[i]-((temp>>(Slrlen-1))+1)/2;
         if(temp2>MAX_VALUE)
         {
