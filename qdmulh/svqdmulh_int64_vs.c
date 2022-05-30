@@ -23,10 +23,10 @@ Doublelenth bigrand()//大随机数生成，2**62-1 or 2**93-1
     switch(sizeof(Doublelenth)/8)
     {
         case 0:
-        bigran=rand();
+        bigran=rand()%(2<<Slrlen);
         break;
         case 1:
-        bigran=(rand()<<31)+rand();
+        bigran=(Doublelenth)(rand()<<31)+rand();
         break;
         default:
         bigran=(Doublelenth)(rand()<<62)+(rand()<<31)+rand();
