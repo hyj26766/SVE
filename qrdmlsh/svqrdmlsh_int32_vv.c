@@ -5,106 +5,110 @@
 #include<time.h>
 #include<arm_sve.h>
 
+static const size_t SIZE=1024*1024+5;
+static const size_t OFFSET=2;
 #define ScalarType int32_t
 #define VectorType svint32_t
 #define Doublelenth int64_t
-
 #define WhileLT svwhilelt_b32
 #define COUNT svcntw
 #define Slrlen 31
 #define MAX_VALUE INT32_MAX
 #define MIN_VALUE INT32_MIN
 
-Doublelenth bigrand()//大随机数生成，2**62-1 or 2**93-1
-{
-    srand((unsigned)time(NULL));
-    Doublelenth bigran;
-    switch(sizeof(Doublelenth)/8)
-    {
-        case 0:
-        bigran=rand();
-        break;
-        case 1:
-        bigran=(rand()<<31)+rand();
-        break;
-        default:
-        bigran=(Doublelenth)(rand()<<62)+(rand()<<31)+rand();
-    }
-    return bigran;
-}
-
-static void calc_vecmulh_opt(ScalarType *c,ScalarType *a,ScalarType *b,size_t cmputSize)
+static void calc_vecmlsh_opt(ScalarType r[SIZE],ScalarType c[SIZE],ScalarType a[SIZE],ScalarType b[SIZE])
 {
     //Stride by the number of words in the vector
-    for (size_t i=0;i<cmputSize;i+=COUNT())
+    for (size_t i=0;i<SIZE;i+=COUNT())
     {
         //Operate on vector lanes where i<SIZE
-        svbool_t pred1=WhileLT(i,cmputSize);
+        svbool_t pred1=WhileLT(i,SIZE);
+        svbool_t pred2=WhileLT(i,SIZE-OFFSET);
         //Load a vector of a
         VectorType sva=svld1(pred1,a+i);
         //Load a vector of b
         VectorType svb=svld1(pred1,b+i);
         //Load a vector of c
-        VectorType svc=svqrdmulh(sva,svb);
-        //Store ab
-        svst1(pred1,c+i,svc);
+        VectorType svc=svld1(pred1,c+i);
+        //mul svc
+        VectorType svr=svqrdmlsh(svc,sva,svb);
+        //Store c-ab
+        svst1(pred2,r+i,svr);
 
     } 
 }
-static void calc_vecmulh_ref(ScalarType *out,ScalarType *a,ScalarType *b,size_t cmputSize)
+static void calc_vecmlsh_ref(ScalarType out[SIZE],ScalarType c[SIZE],ScalarType a[SIZE],ScalarType b[SIZE])
 {
-    for (size_t i=0;i<cmputSize;++i)
+    for (size_t i=0;i<SIZE;++i)
     {
         Doublelenth temp=(Doublelenth)a[i]*b[i];
-        out[i]=(temp-1>>Slrlen)+1;
-}
+        Doublelenth temp2=c[i]-((temp>>(Slrlen-1))+1)/2;
+        if(temp2>MAX_VALUE)
+        {
+            out[i]=MAX_VALUE;
+        }
+        else if(temp2<MIN_VALUE)
+        {
+            out[i]=MIN_VALUE;
+        }
+        else{
+            out[i]=temp2;
+        }
+    }
 }
 
-int test_svqdmulh_int32_vv(size_t cmputSize)
+int test_svqrdmlsh_int32_vv()
 {
-    ScalarType *ref_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
-    ScalarType *opt_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
-    ScalarType *a=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
-    ScalarType *b=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
-
-    int ret=0;
+    ScalarType *ref_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
+    ScalarType *opt_x=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
+    ScalarType *a=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
+    ScalarType *b=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
+    ScalarType *c=(ScalarType*)malloc(SIZE*sizeof(ScalarType));
     srand((unsigned)time(NULL));
 
-    for (size_t i=0;i<cmputSize;++i)
+    for (size_t i=0;i<SIZE;++i)
     {
-        ref_x[i]=bigrand()%((Doublelenth)2<<Slrlen)+MIN_VALUE;
-        opt_x[i]=bigrand()%((Doublelenth)2<<Slrlen)+MIN_VALUE;
-        a[i]=bigrand()%((Doublelenth)2<<Slrlen)+MIN_VALUE;
-        b[i]=bigrand()%((Doublelenth)2<<Slrlen)+MIN_VALUE;
+        ref_x[i]=0;
+        opt_x[i]=0;
+        a[i]=i%((MAX_VALUE));
+        b[i]=rand()%MAX_VALUE;
+        c[i]=rand()%MAX_VALUE;
     }
 
-    calc_vecmulh_opt(opt_x,a,b,cmputSize);
-    calc_vecmulh_ref(ref_x,a,b,cmputSize);
+    for (size_t i=(SIZE-OFFSET);i<SIZE;++i)
+    {
+        opt_x[i]=100;
+    }
 
-    for (size_t i=0;i<cmputSize;++i)
+    calc_vecmlsh_opt(opt_x,c,a,b);
+    calc_vecmlsh_ref(ref_x,c,a,b);
+
+    for (size_t i=0;i<(SIZE-OFFSET);++i)
     {
         if(ref_x[i]!=opt_x[i])
         {
             printf("%s, %d TEST FAILED\n",__func__,__LINE__);
-            printf("ERROR:%lu,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,a,b,ref_x[i],opt_x[i]);
-            ret=1;
+            printf("ERROR:%lu,ref_x=%lld,opt_x=%lld\n",i,ref_x[i],opt_x[i]);
 
+            return 1;
         }
     }
 
-    if(ret==0)
+    for (size_t i=(SIZE-OFFSET);i<SIZE;++i)
     {
-        printf("%s, %d TEST PASSED\n",__func__,__LINE__);
+        if(100!=opt_x[i]){
+            printf("%s, %d TEST FAILED\n",__func__,__LINE__);
+            printf("ERROR:%lu,opt_x=%lld\n",i,opt_x[i]);
+            return 1;
+        }
     }
+    printf("%s, %d TEST PASSED\n",__func__,__LINE__);
 
-    free(opt_x);
-    opt_x=NULL;
-    free(ref_x);
-    ref_x=NULL;
-    free(a);
-    a=NULL;
-    free(b);
-    b=NULL;
+    return EXIT_SUCCESS;
+}
 
-    return ret;
+int main()
+{
+    test_svqrdmlsh_int32_vv();
+    return 1;
 }
