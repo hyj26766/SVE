@@ -62,7 +62,7 @@ static void calc_vecmlsh_ref(ScalarType *out,ScalarType *c,ScalarType *a,ScalarT
             temp2=(Doublelenth)c[i]-((temp>>Slrlen-1)+1)/2;
             }
         else{
-            temp2=(Doublelenth)c[i]-((((Doublelenth)2<<2*Slrlen-1)+temp)>>Slrlen-1)/2-MIN_VALUE;
+            temp2=(Doublelenth)c[i]-(((((Doublelenth)2<<2*Slrlen-1)+temp)>>Slrlen-1)+1)/2-MIN_VALUE;
             }
         if(temp2>MAX_VALUE)
         {
@@ -105,7 +105,7 @@ int test_svqrdmlsh_int16_vs(size_t cmputSize)
         if(ref_x[i]!=opt_x[i])
         {
             printf("%s, %d TEST FAILED\n",__func__,__LINE__);
-            printf("ERROR:%lu,c:%lld,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,c[i],a[i],b,ref_x[i],opt_x[i]);
+            printf("ERROR:%lu,c:%lld,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,(int64_t)c[i],(int64_t)a[i],(int64_t)b,(int64_t)ref_x[i],(int64_t)opt_x[i]);
             ret=1;
             
         }

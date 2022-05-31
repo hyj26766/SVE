@@ -11,13 +11,15 @@
 
 #define WhileLT svwhilelt_b32
 #define COUNT svcntw
-#define Slrlen 31
+#define Slrlen (32-1)
 #define MAX_VALUE INT32_MAX
 #define MIN_VALUE INT32_MIN
+#define LANE 1
+#define LANE_MAX (128/32)
 
 static Doublelenth bigrand()//大随机数生成，2**62-1 or 2**93-1
 {
-    //srand((unsigned)time(NULL));
+    srand((unsigned)time(NULL));
     Doublelenth bigran;
     switch(sizeof(Doublelenth)/8)
     {
@@ -47,7 +49,7 @@ static void calc_vecmlah_opt(ScalarType *r,ScalarType *c,ScalarType *a,ScalarTyp
         //Load a vector of c
         VectorType svc=svld1(pred1,c+i);
         //mul svc
-        VectorType svr=svqrdmlah(svc,sva,svb);
+        VectorType svr=svqrdmlah_lane(svc,sva,svb,LANE);
         //Store c+ab
         svst1(pred1,r+i,svr);
 
@@ -55,9 +57,15 @@ static void calc_vecmlah_opt(ScalarType *r,ScalarType *c,ScalarType *a,ScalarTyp
 }
 static void calc_vecmlah_ref(ScalarType *out,ScalarType *c,ScalarType *a,ScalarType *b,size_t cmputSize)
 {
+    ScalarType laneValue=0;
+    size_t index=0;
+    
     for (size_t i=0;i<cmputSize;++i)
     {
-        Doublelenth temp=(Doublelenth)a[i]*(Doublelenth)b[i];
+        index=(i/LANE_MAX)*LANE_MAX+LANE;
+        laneValue=b[index];
+
+        Doublelenth temp=(Doublelenth)a[i]*laneValue;
         Doublelenth temp2;
         if(temp>0)//四舍五入
         {
@@ -77,10 +85,10 @@ static void calc_vecmlah_ref(ScalarType *out,ScalarType *c,ScalarType *a,ScalarT
         else{
             out[i]=temp2;
         }
-    }
+}
 }
 
-int test_svqrdmlah_int32_vs(size_t cmputSize)
+int test_svqrdmlah_lane_int32_vv(size_t cmputSize)
 {
     ScalarType *ref_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
     ScalarType *opt_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
@@ -108,9 +116,11 @@ int test_svqrdmlah_int32_vs(size_t cmputSize)
         if(ref_x[i]!=opt_x[i])
         {
             printf("%s, %d TEST FAILED\n",__func__,__LINE__);
-            printf("ERROR:%lu,c:%lld,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,(int64_t)c[i],(int64_t)a[i],(int64_t)b[i],(int64_t)ref_x[i],(int64_t)opt_x[i]);
+
+            size_t index=(i/LANE_MAX)*LANE_MAX+LANE;
+            printf("ERROR:%lu,c:%lld,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,(int64_t)c[i],(int64_t)a[i],(int64_t)b[index],(int64_t)ref_x[i],(int64_t)opt_x[i]);
             ret=1;
-            
+
         }
     }
 
@@ -126,9 +136,9 @@ int test_svqrdmlah_int32_vs(size_t cmputSize)
     free(a);
     a=NULL;
     free(b);
-    a=NULL;
+    b=NULL;
     free(c);
-    a=NULL;
+    c=NULL;
 
     return ret;
 }
