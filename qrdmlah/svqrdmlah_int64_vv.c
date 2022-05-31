@@ -15,7 +15,7 @@
 #define MAX_VALUE INT64_MAX
 #define MIN_VALUE INT64_MIN
 
-Doublelenth bigrand()//大随机数生成，2**62-1 or 2**93-1
+static Doublelenth bigrand()//大随机数生成，2**62-1 or 2**93-1
 {
     srand((unsigned)time(NULL));
     Doublelenth bigran;
@@ -58,7 +58,7 @@ static void calc_vecmlah_ref(ScalarType *out,ScalarType *c,ScalarType *a,ScalarT
     for (size_t i=0;i<cmputSize;++i)
     {
         Doublelenth temp=(Doublelenth)a[i]*b[i];
-        Doublelenth temp2=c[i]-((temp-1>>Slrlen)+1);
+        Doublelenth temp2=c[i]+((temp>>(Slrlen-1))+1)/2;
         if(temp2>MAX_VALUE)
         {
             out[i]=MAX_VALUE;

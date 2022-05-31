@@ -15,7 +15,7 @@
 #define MAX_VALUE INT8_MAX
 #define MIN_VALUE INT8_MIN
 
-Doublelenth bigrand()//大随机数生成，2**62-1 or 2**93-1
+static Doublelenth bigrand()//大随机数生成，2**62-1 or 2**93-1
 {
     srand((unsigned)time(NULL));
     Doublelenth bigran;
@@ -86,7 +86,7 @@ int test_svqdmulh_int8_vv(size_t cmputSize)
         if(ref_x[i]!=opt_x[i])
         {
             printf("%s, %d TEST FAILED\n",__func__,__LINE__);
-            printf("ERROR:%lu,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,a,b,ref_x[i],opt_x[i]);
+            printf("ERROR:%lu,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,a[i],b[i],ref_x[i],opt_x[i]);
             ret=1;
 
         }
