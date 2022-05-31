@@ -57,12 +57,12 @@ static void calc_vecmulh_ref(ScalarType *out,ScalarType *a,ScalarType b,size_t c
     {
         Doublelenth temp=(Doublelenth)a[i]*b;
          //out[i]=((temp-1)>>Slrlen)+1;//向上取整
-        if(temp>0)//四舍五入
+        if(temp>=0)//四舍五入
         {
             out[i]=((temp>>Slrlen-1)+1)/2;
             }
         else{
-            out[i]=-((-temp>>Slrlen-1)+1)>>1;
+            out[i]=((((Doublelenth)2<<2*Slrlen-1)+temp)>>Slrlen-1)/2+MIN_VALUE;
             }
         //out[i]=temp>>Slrlen;向下取整
 }
