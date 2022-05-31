@@ -64,7 +64,7 @@ static void calc_vecmlah_ref(ScalarType *out,ScalarType *c,ScalarType *a,ScalarT
             temp2=(Doublelenth)c[i]+((temp>>Slrlen-1)+1)/2;
             }
         else{
-            temp2=(Doublelenth)c[i]-((-temp>>Slrlen-1)+1)/2;
+            temp2=(Doublelenth)c[i]-((-temp>>Slrlen-1)+1)>>1;
             }
         if(temp2>MAX_VALUE)
         {
