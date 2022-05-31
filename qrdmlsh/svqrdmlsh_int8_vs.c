@@ -56,7 +56,14 @@ static void calc_vecmlsh_ref(ScalarType *out,ScalarType *c,ScalarType *a,ScalarT
     for (size_t i=0;i<cmputSize;++i)
     {
         Doublelenth temp=(Doublelenth)a[i]*(Doublelenth)b;
-        Doublelenth temp2=(Doublelenth)c[i]-((temp>>(Slrlen-1))+1)/2;
+        Doublelenth temp2;
+        if(temp>0)//四舍五入
+        {
+            temp2=(Doublelenth)c[i]-((temp>>Slrlen-1)+1)/2;
+            }
+        else{
+            temp2=(Doublelenth)c[i]+((-temp>>Slrlen-1)+1)/2;
+            }
         if(temp2>MAX_VALUE)
         {
             out[i]=MAX_VALUE;
@@ -98,7 +105,7 @@ int test_svqrdmlsh_int8_vs(size_t cmputSize)
         if(ref_x[i]!=opt_x[i])
         {
             printf("%s, %d TEST FAILED\n",__func__,__LINE__);
-            printf("ERROR:%lu,c:%lld,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,c[i],a[i],b,ref_x[i],opt_x[i]);
+            printf("ERROR:%lu,c:%lld,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,(int64_t)c[i],(int64_t)a[i],(int64_t)b,(int64_t)ref_x[i],(int64_t)opt_x[i]);
             ret=1;
             
         }
