@@ -1,0 +1,1 @@
+(temp-1>>Slrlen)+1

@@ -86,7 +86,7 @@ int test_svqdmulh_int8_vv(size_t cmputSize)
         if(ref_x[i]!=opt_x[i])
         {
             printf("%s, %d TEST FAILED\n",__func__,__LINE__);
-            printf("ERROR:%lu,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,a[i],b[i],ref_x[i],opt_x[i]);
+            printf("ERROR:%lu,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,(__int64_t)a[i],(__int64_t)b[i],(__int64_t)ref_x[i],(__int64_t)opt_x[i]);
             ret=1;
 
         }
