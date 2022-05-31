@@ -62,7 +62,7 @@ static void calc_vecmulh_ref(ScalarType *out,ScalarType *a,ScalarType b,size_t c
             out[i]=((temp>>Slrlen-1)+1)/2;
             }
         else{
-            out[i]=-((-temp>>Slrlen-1)-1)/2;
+            out[i]=-((-temp>>Slrlen-1)+1)/2;
             }
         //out[i]=temp>>Slrlen;向下取整
 }
