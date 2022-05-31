@@ -56,9 +56,9 @@ static void calc_vecmulh_ref(ScalarType *out,ScalarType *a,ScalarType *b,size_t 
     for (size_t i=0;i<cmputSize;++i)
     {
         Doublelenth temp=(Doublelenth)a[i]*b[i];
-        //out[i]=(temp-1>>Slrlen)+1;向上取整
+        out[i]=(temp-1>>Slrlen)+1;
         //out[i]=((temp>>Slrlen-1)+1)/2;//四舍五入
-        out[i]=temp>>Slrlen;
+        //out[i]=temp>>Slrlen;向下取整
 }
 }
 
@@ -88,7 +88,7 @@ int test_svqrdmulh_int64_vv(size_t cmputSize)
         if(ref_x[i]!=opt_x[i])
         {
             printf("%s, %d TEST FAILED\n",__func__,__LINE__);
-            printf("ERROR:%lu,a:%+lld,b:%+lld,ref_x=%+lld,opt_x=%+lld\n",i,a[i],b[i],ref_x[i],opt_x[i]);
+            printf("ERROR:%lu,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,(__int64_t)a[i],(__int64_t)b[i],(__int64_t)ref_x[i],(__int64_t)opt_x[i]);
             ret=1;
 
         }
