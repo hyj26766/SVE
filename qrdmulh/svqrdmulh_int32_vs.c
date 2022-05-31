@@ -55,7 +55,7 @@ static void calc_vecmulh_ref(ScalarType *out,ScalarType *a,ScalarType b,size_t c
 {
     for (size_t i=0;i<cmputSize;++i)
     {
-        Doublelenth temp=(Doublelenth)a[i]*b;
+        Doublelenth temp=(Doublelenth)a[i]*(Doublelenth)b;
         //out[i]=(temp-1>>Slrlen)+1;向上取整
         out[i]=((temp>>Slrlen-1)+1)/2;//四舍五入
 }
