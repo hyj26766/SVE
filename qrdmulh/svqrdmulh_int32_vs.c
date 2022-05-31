@@ -15,9 +15,9 @@
 #define MAX_VALUE INT32_MAX
 #define MIN_VALUE INT32_MIN
 
-Doublelenth bigrand()//大随机数生成，2**62-1 or 2**93-1
+static Doublelenth bigrand()//大随机数生成，2**62-1 or 2**93-1
 {
-    srand((unsigned)time(NULL));
+    //srand((unsigned)time(NULL));
     Doublelenth bigran;
     switch(sizeof(Doublelenth)/8)
     {
