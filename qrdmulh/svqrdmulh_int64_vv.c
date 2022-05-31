@@ -60,7 +60,7 @@ static void calc_vecmulh_ref(ScalarType *out,ScalarType *a,ScalarType *b,size_t 
 }
 }
 
-int test_svqdmulh_int64_vv(size_t cmputSize)
+int test_svqrdmulh_int64_vv(size_t cmputSize)
 {
     ScalarType *ref_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
     ScalarType *opt_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
