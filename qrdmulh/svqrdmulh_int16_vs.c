@@ -69,13 +69,13 @@ int test_svqrdmulh_int16_vs(size_t cmputSize)
 
     int ret=0;
     srand((unsigned)time(NULL));
-    ScalarType b=bigrand()%((Doublelenth)2<<Slrlen)+MIN_VALUE;
+    ScalarType b=bigrand()%((Doublelenth)2<<Slrlen)-MAX_VALUE-1;
 
     for (size_t i=0;i<cmputSize;++i)
     {
-        ref_x[i]=bigrand()%((Doublelenth)2<<Slrlen)+MIN_VALUE;
-        opt_x[i]=bigrand()%((Doublelenth)2<<Slrlen)+MIN_VALUE;
-        a[i]=bigrand()%((Doublelenth)2<<Slrlen)+MIN_VALUE;
+        ref_x[i]=bigrand()%((Doublelenth)2<<Slrlen)-MAX_VALUE-1;
+        opt_x[i]=bigrand()%((Doublelenth)2<<Slrlen)-MAX_VALUE-1;
+        a[i]=bigrand()%((Doublelenth)2<<Slrlen)-MAX_VALUE-1;
     }
 
     calc_vecmulh_opt(opt_x,a,b,cmputSize);
