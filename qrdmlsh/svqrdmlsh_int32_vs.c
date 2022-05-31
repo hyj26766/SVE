@@ -55,8 +55,8 @@ static void calc_vecmlsh_ref(ScalarType *out,ScalarType *c,ScalarType *a,ScalarT
 {
     for (size_t i=0;i<cmputSize;++i)
     {
-        Doublelenth temp=(Doublelenth)a[i]*b;
-        Doublelenth temp2=c[i]-((temp>>(Slrlen-1))+1)/2;
+        Doublelenth temp=(Doublelenth)a[i]*(Doublelenth)b;
+        Doublelenth temp2=(Doublelenth)c[i]-((temp>>(Slrlen-1))+1)/2;
         if(temp2>MAX_VALUE)
         {
             out[i]=MAX_VALUE;

@@ -57,8 +57,8 @@ static void calc_vecmlah_ref(ScalarType *out,ScalarType *c,ScalarType *a,ScalarT
 {
     for (size_t i=0;i<cmputSize;++i)
     {
-        Doublelenth temp=(Doublelenth)a[i]*b[i];
-        Doublelenth temp2=c[i]+((temp>>(Slrlen-1))+1)/2;
+        Doublelenth temp=(Doublelenth)a[i]*(Doublelenth)b[i];
+        Doublelenth temp2=(Doublelenth)c[i]+((temp>>(Slrlen-1))+1)/2;
         if(temp2>MAX_VALUE)
         {
             out[i]=MAX_VALUE;
