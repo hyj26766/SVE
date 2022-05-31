@@ -55,9 +55,10 @@ static void calc_vecmulh_ref(ScalarType *out,ScalarType *a,ScalarType *b,size_t 
 {
     for (size_t i=0;i<cmputSize;++i)
     {
-        Doublelenth temp=(Doublelenth)a[i]*(Doublelenth)b[i];
+        Doublelenth temp=(Doublelenth)a[i]*b[i];
         //out[i]=(temp-1>>Slrlen)+1;向上取整
-        out[i]=((temp>>Slrlen-1)+1)/2;//四舍五入
+        //out[i]=((temp>>Slrlen-1)+1)/2;//四舍五入
+        out[i]=temp>>Slrlen;
 }
 }
 
@@ -73,10 +74,10 @@ int test_svqrdmulh_int64_vv(size_t cmputSize)
 
     for (size_t i=0;i<cmputSize;++i)
     {
-        ref_x[i]=bigrand()%((Doublelenth)2<<Slrlen)-MAX_VALUE-1;
-        opt_x[i]=bigrand()%((Doublelenth)2<<Slrlen)-MAX_VALUE-1;
-        a[i]=bigrand()%((Doublelenth)2<<Slrlen)-MAX_VALUE-1;
-        b[i]=bigrand()%((Doublelenth)2<<Slrlen)-MAX_VALUE-1;
+        ref_x[i]=bigrand()%((Doublelenth)2<<Slrlen)+MIN_VALUE;
+        opt_x[i]=bigrand()%((Doublelenth)2<<Slrlen)+MIN_VALUE;
+        a[i]=bigrand()%((Doublelenth)2<<Slrlen)+MIN_VALUE;
+        b[i]=bigrand()%((Doublelenth)2<<Slrlen)+MIN_VALUE;
     }
 
     calc_vecmulh_opt(opt_x,a,b,cmputSize);
@@ -87,7 +88,7 @@ int test_svqrdmulh_int64_vv(size_t cmputSize)
         if(ref_x[i]!=opt_x[i])
         {
             printf("%s, %d TEST FAILED\n",__func__,__LINE__);
-            printf("ERROR:%lu,a:%lld,b:%lld,ref_x=%lld,opt_x=%lld\n",i,a[i],b[i],ref_x[i],opt_x[i]);
+            printf("ERROR:%lu,a:%+lld,b:%+lld,ref_x=%+lld,opt_x=%+lld\n",i,a[i],b[i],ref_x[i],opt_x[i]);
             ret=1;
 
         }
