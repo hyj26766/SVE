@@ -80,7 +80,7 @@ static void calc_vecmlah_ref(ScalarType *out,ScalarType *c,ScalarType *a,ScalarT
     }
 }
 
-int test_svqrdmlah_int8_vs(size_t cmputSize)
+int test_svqrdmlah_int8_vv(size_t cmputSize)
 {
     ScalarType *ref_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
     ScalarType *opt_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));

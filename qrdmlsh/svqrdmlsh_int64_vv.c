@@ -80,7 +80,7 @@ static void calc_vecmlsh_ref(ScalarType *out,ScalarType *c,ScalarType *a,ScalarT
     }
 }
 
-int test_svqrdmlsh_int64_vs(size_t cmputSize)
+int test_svqrdmlsh_int64_vv(size_t cmputSize)
 {
     ScalarType *ref_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
     ScalarType *opt_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
