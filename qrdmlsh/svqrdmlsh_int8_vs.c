@@ -57,7 +57,7 @@ static void calc_vecmlsh_ref(ScalarType *out,ScalarType *c,ScalarType *a,ScalarT
     {
         Doublelenth temp=(Doublelenth)a[i]*(Doublelenth)b;
         Doublelenth temp2;
-        if(temp>0)//四舍五入
+        if(temp>=0)//四舍五入
         {
             temp2=(Doublelenth)c[i]-((temp>>Slrlen-1)+1)/2;
             }

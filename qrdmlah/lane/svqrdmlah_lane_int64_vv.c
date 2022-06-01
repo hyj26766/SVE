@@ -10,7 +10,7 @@
 #define Doublelenth __int128_t
 
 #define WhileLT svwhilelt_b64
-#define COUNT svcntw
+#define COUNT svcntd
 #define Slrlen (64-1)
 #define MAX_VALUE INT64_MAX
 #define MIN_VALUE INT64_MIN
@@ -19,7 +19,7 @@
 
 static Doublelenth bigrand()//大随机数生成，2**62-1 or 2**93-1
 {
-    srand((unsigned)time(NULL));
+    //srand((unsigned)time(NULL));
     Doublelenth bigran;
     switch(sizeof(Doublelenth)/8)
     {
@@ -67,7 +67,7 @@ static void calc_vecmlah_ref(ScalarType *out,ScalarType *c,ScalarType *a,ScalarT
 
         Doublelenth temp=(Doublelenth)a[i]*laneValue;
         Doublelenth temp2;
-        if(temp>0)//四舍五入
+        if(temp>=0)//四舍五入
         {
             temp2=(Doublelenth)c[i]+((temp>>Slrlen-1)+1)/2;
             }
