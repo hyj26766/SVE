@@ -37,7 +37,7 @@ static Doublelenth bigrand()//大随机数生成，2**62-1 or 2**93-1
     return bigran;
 }
 
-static void calc_vecsli_opt(ScalarType *r,ScalarType *op1,ScalarType *op2,size_t cmputSize)
+static void calc_vecsli_opt(ScalarType *r,ScalarType *op1,ScalarType *op2,size_t cmputSize,uint64_t imm)
 {
     //Stride by the number of words in the vector
     for (size_t i=0;i<cmputSize;i+=COUNT())
@@ -49,7 +49,7 @@ static void calc_vecsli_opt(ScalarType *r,ScalarType *op1,ScalarType *op2,size_t
         //Load a vector of op2
         VectorType svop2=svld1(pred1,op2+i);
         //result
-        VectorType svr=svsli(svop1,svop2,imm3);
+        VectorType svr=svsli(svop1,svop2,imm);
         //Store result
         svst1(pred1,r+i,svr);
 
@@ -64,7 +64,7 @@ static void calc_vecsli_ref(ScalarType *out,ScalarType *op1,ScalarType *op2,size
 }
 }
 
-int test_svsli_int64(size_t cmputSize)
+int test_svsli_uint64(size_t cmputSize)
 {
     ScalarType *ref_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
     ScalarType *opt_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
@@ -83,8 +83,9 @@ int test_svsli_int64(size_t cmputSize)
         op1[i]=bigrand()%((Doublelenth)1<<Bitsofs)+MIN_VALUE;
         op2[i]=bigrand()%((Doublelenth)1<<Bitsofs)+MIN_VALUE;
     }
+    uint imm=rand()%Bitsofs;
 
-    calc_vecsli_opt(opt_x,op1,op2,cmputSize);
+    calc_vecsli_opt(opt_x,op1,op2,cmputSize,imm);
     calc_vecsli_ref(ref_x,op1,op2,cmputSize);
 
     for (size_t i=0;i<cmputSize;++i)

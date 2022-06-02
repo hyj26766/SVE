@@ -123,7 +123,7 @@ int test_svqrdmlsh_int64_vs(size_t cmputSize)
     free(a);
     a=NULL;
     free(c);
-    a=NULL;
+    c=NULL;
 
     return ret;
 }

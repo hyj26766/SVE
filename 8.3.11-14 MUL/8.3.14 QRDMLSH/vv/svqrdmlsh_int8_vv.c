@@ -126,9 +126,9 @@ int test_svqrdmlsh_int8_vv(size_t cmputSize)
     free(a);
     a=NULL;
     free(b);
-    a=NULL;
+    b=NULL;
     free(c);
-    a=NULL;
+    c=NULL;
 
     return ret;
 }

@@ -64,7 +64,7 @@ static void calc_vecsli_ref(ScalarType *out,ScalarType *op1,ScalarType *op2,size
 }
 }
 
-int test_svsli_int8(size_t cmputSize)
+int test_svsli_uint8(size_t cmputSize)
 {
     ScalarType *ref_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
     ScalarType *opt_x=(ScalarType*)malloc(cmputSize*sizeof(ScalarType));
