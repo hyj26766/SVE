@@ -16,6 +16,8 @@
 
 #define MAX_VALUE INT32_MAX
 #define MIN_VALUE INT32_MIN
+#define MAX_RESULT INT16_MAX
+#define MIN_RESULT INT16_MIN
 
 static Doublelenth bigrand()//大随机数生成，2**62-1 or 2**93-1
 {
@@ -53,11 +55,20 @@ static void calc_vecaddhnb_opt(HalfScalar *r,ScalarType *op1,ScalarType op2,size
 }
 static void calc_vecaddhnb_ref(HalfScalar *out,ScalarType *op1,ScalarType op2,size_t cmputSize)
 {
-    ScalarType result;
-    for (size_t i=0;i<cmputSize;i=i+2)//偶数 (a+b)/2*N
+    for (size_t i=0;i<cmputSize;i=i+2)//偶数 (a+b)/2*N   模运算？？？
     {
         Doublelenth temp=(Doublelenth)op1[i]+op2;
-        out[i]=(HalfScalar)(temp>>sizeof(ScalarType)*4);
+        if(temp>MAX_VALUE)
+        {
+            out[i]=MAX_RESULT;
+        }
+        else if(temp<MIN_VALUE)
+        {
+            out[i]=MIN_RESULT;
+        }
+        else{
+            out[i]=(ScalarType)(temp>>sizeof(HalfScalar)*8);
+        }
     }
     
     for (size_t i=1;i<cmputSize;i=i+2)//奇数 0
@@ -79,11 +90,11 @@ int test_svaddhnb_int32_vs(size_t cmputSize)
 
     for (size_t i=0;i<cmputSize;++i)
     {
-        ref_x[i]=bigrand()%((ScalarType)1<<sizeof(ScalarType)*4)-((ScalarType)1<<sizeof(ScalarType)*4-1);
-        opt_x[i]=bigrand()%((ScalarType)1<<sizeof(ScalarType)*4)-((ScalarType)1<<sizeof(ScalarType)*4-1);
+        ref_x[i]=bigrand()%((ScalarType)1<<sizeof(ScalarType)*4)+MIN_RESULT;
+        opt_x[i]=bigrand()%((ScalarType)1<<sizeof(ScalarType)*4)+MIN_RESULT;
         op1[i]=bigrand()%((Doublelenth)1<<sizeof(Doublelenth)*4)+MIN_VALUE;
     }
-
+    
     calc_vecaddhnb_opt(opt_x,op1,op2,cmputSize);
     calc_vecaddhnb_ref(ref_x,op1,op2,cmputSize);
 
