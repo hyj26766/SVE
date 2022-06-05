@@ -1,5 +1,10 @@
 {
-    "C_Cpp.errorSquiggles": "Disabled"
+    "C_Cpp.errorSquiggles": "Disabled",
+    "files.associations": {
+        "stdlib.h": "c",
+        "algorithm": "c",
+        "random": "c"
+    }
     //"C_Cpp.intelliSenseEngineFallback": "Disabled", //需要添加的
     //"C_Cpp.intelliSenseEngine": "Tag Parser",  //  需要添加的
 
