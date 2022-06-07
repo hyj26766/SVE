@@ -108,9 +108,3 @@ int test_svqdmulh_int8_vv(size_t cmputSize)
 
     return ret;
 }
-
-int main()
-{
-    test_svqdmulh_int8_vv(1024*1024);
-    return 1;
-}

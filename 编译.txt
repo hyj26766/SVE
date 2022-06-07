@@ -1,0 +1,1 @@
+aarch64-none-linux-gnu-gcc -march=armv8-a+sve2+sve -O3 -static main.c svqdmulh_int8_vs.c svqdmulh_int16_vs.c svqdmulh_int32_vs.c svqdmulh_int64_vs.c svqdmulh_int8_vv.c svqdmulh_int16_vv.c svqdmulh_int32_vv.c svqdmulh_int64_vv.c svqdmulh_lane_int16_vv.c svqdmulh_lane_int32_vv.c svqdmulh_lane_int64_vv.c -o main
